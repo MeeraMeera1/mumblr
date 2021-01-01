@@ -12,6 +12,12 @@ module.exports = {
         isBetaMember: false
       }], {});
     */
+    return queryInterface.bulkInsert('Likes', [{
+      userId:2,
+      postId:2,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }], {});
   },
 
   down: (queryInterface, Sequelize) => {
@@ -22,5 +28,6 @@ module.exports = {
       Example:
       return queryInterface.bulkDelete('People', null, {});
     */
+    return queryInterface.bulkDelete('Likes', null, {});
   }
 };

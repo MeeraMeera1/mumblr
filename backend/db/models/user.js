@@ -1,4 +1,5 @@
 'use strict';
+const bcrypt = require('bcryptjs');
 const { Validator } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
@@ -54,6 +55,38 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
   });
+
+  //returns an object with the USER instance information that is safe to save to a JWT
+  User.prototype.toSafeObject = function() {
+    const { id, username, email, age} = this;
+    return {id, username, email, age};
+  }; 
+
+  //checks to see if users instance password matchs the given password
+  User.prototype.validatePassword = function(password) {
+    return bcrypt.compareSync(password, this.hashedPassword.toString());
+  };
+
+  //return a user with the given id using currentUser scope
+  User.getCurrentUserById = async function(id) {
+    return await User.scope('currentUser').findByPk(id);
+  };
+
+  User.login = async function ({ credential, password }) {
+    const { Op } = require('sequelize');
+    const user = await User.scope('loginUser').findOne({
+      where: {
+        [Op.or]: {
+          username: credential,
+          email: credential,
+        },
+      },
+    });
+    if (user && user.validatePassword(password)) {
+      return await User.scope('currentUser').findByPk(user.id)
+    }
+  }
+
   User.associate = function(models) {
     // associations can be defined here
     User.hasMany(models.Post, { foreignKey: "userId" });
