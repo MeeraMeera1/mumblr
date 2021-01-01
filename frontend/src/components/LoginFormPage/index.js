@@ -31,7 +31,7 @@ function LoginFormPage() {
             </ul>
             <label>
                 Username or Email
-        <input
+                <input
                     type="text"
                     value={credential}
                     onChange={(e) => setCredential(e.target.value)}
@@ -40,7 +40,7 @@ function LoginFormPage() {
             </label>
             <label>
                 Password
-        <input
+                <input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
